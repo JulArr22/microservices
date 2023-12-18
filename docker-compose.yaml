@@ -1,0 +1,173 @@
+version: '3'
+
+services:
+  # Consul
+  consul:
+    build: ./consul
+    ports:
+      - '8300:8300'
+      - '8301:8301'
+      - '8301:8301/udp'
+      - '8500:8500'     # Port For Consul Web UI
+      - '8600:8600'
+      - '8600:8600/udp'
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8500/"]
+      interval: 2s
+      timeout: 2s
+      retries: 10
+    networks:
+      bridge-network:
+        ipv4_address: '${CONSUL_HOST}'
+
+  # Service Logs
+  logs1:
+    hostname: logs1
+    build: ./logs
+    volumes:
+      - './logs/app:/code/app'
+    ports:
+      - '18010:${UVICORN_PORT}'
+    environment:
+      SERVICE_NAME: logs
+      SERVICE_ID: logs1
+      CONSUL_HOST: ${CONSUL_HOST}
+      UVICORN_PORT: ${UVICORN_PORT}
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      consul:
+        condition: service_healthy
+    networks:
+      bridge-network:
+    restart: unless-stopped
+
+  # Service Client
+  client1:
+    hostname: client1
+    build: ./client
+    volumes:
+      - './client/app:/code/app'
+    ports:
+      - '18011:${UVICORN_PORT}'
+    environment:
+      SERVICE_NAME: client
+      SERVICE_ID: client1
+      CONSUL_HOST: ${CONSUL_HOST}
+      UVICORN_PORT: ${UVICORN_PORT}
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      consul:
+        condition: service_healthy
+    networks:
+      bridge-network:
+    restart: unless-stopped
+
+  # Service Delivery
+  delivery1:
+    hostname: delivery1
+    build: ./delivery
+    volumes:
+      - './delivery/app:/code/app'
+    ports:
+      - '18012:${UVICORN_PORT}'
+    environment:
+      SERVICE_NAME: delivery
+      SERVICE_ID: delivery1
+      CONSUL_HOST: ${CONSUL_HOST}
+      UVICORN_PORT: ${UVICORN_PORT}
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      consul:
+        condition: service_healthy
+    networks:
+      bridge-network:
+    restart: unless-stopped
+
+  # Service Machine
+  machine1:
+    hostname: machine1
+    build: ./machine
+    volumes:
+      - './machine/app:/code/app'
+    ports:
+      - '18013:${UVICORN_PORT}'
+    environment:
+      SERVICE_NAME: machine
+      SERVICE_ID: machine1
+      CONSUL_HOST: ${CONSUL_HOST}
+      UVICORN_PORT: ${UVICORN_PORT}
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      consul:
+        condition: service_healthy
+    networks:
+      bridge-network:
+    restart: unless-stopped
+
+  # Service Payment
+  payment1:
+    hostname: payment1
+    build: ./payment
+    volumes:
+      - './payment/app:/code/app'
+    ports:
+      - '18015:${UVICORN_PORT}'
+    environment:
+      SERVICE_NAME: payment
+      SERVICE_ID: payment1
+      CONSUL_HOST: ${CONSUL_HOST}
+      UVICORN_PORT: ${UVICORN_PORT}
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      consul:
+        condition: service_healthy
+    networks:
+      bridge-network:
+    restart: unless-stopped
+
+  haproxy:
+    hostname: haproxy
+    image: haproxy:2.6-alpine
+    ports:
+      - '${HAPROXY_PORT}:${HAPROXY_PORT}'
+      - '${HAPROXY_STATS_PORT}:${HAPROXY_STATS_PORT}' # Port For HAProxy Web UI = 18001
+    networks:
+      bridge-network:
+        ipv4_address: '${HAPROXY_IP}'
+    environment:
+      - 'HAPROXY_PORT=${HAPROXY_PORT}'
+      - 'HAPROXY_STATS_PORT=${HAPROXY_STATS_PORT}'
+      - 'CONSUL_HOST=${CONSUL_HOST}'
+    restart: unless-stopped
+    volumes:
+      - './haproxy/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg'
+
+  rabbitmq:
+    build: ./rabbitmq
+    ports:
+      - "15672:15672"  # Port For RabbitMQ Web UI
+      - "5672:5672"    # Port For RabbitMQ Service
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:15672/"]
+      interval: 2s
+      timeout: 2s
+      retries: 10
+    environment:
+      RABBITMQ_DEFAULT_USER: user
+      RABBITMQ_DEFAULT_PASS: user
+    networks:
+      bridge-network:
+        ipv4_address: '${RABBITMQ_IP}'
+
+networks:
+  bridge-network:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: '${NETWORK_SUBNET}'
