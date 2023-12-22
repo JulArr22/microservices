@@ -40,8 +40,15 @@ class Config:
     def get_ip(self):
         #ip = Config.get_adapter_ip("eth0")  # this is the default interface in docker
 
-        url = "http://169.254.169.254/latest/meta-data/public-ipv4"
-        respuesta = requests.get(url)
+        url_token = "http://169.254.169.254/latest/api/token"
+        headers = {"X-aws-ec2-metadata-token-ttl-seconds": "21600"}
+        response = requests.put(url_token, headers=headers)
+        token = response.content.decode('utf-8')
+
+        # Usa el token para obtener la IP pública
+        url_ip = "http://169.254.169.254/latest/meta-data/public-ipv4"
+        headers = {"X-aws-ec2-metadata-token": token}
+        respuesta = requests.get(url_ip, headers=headers)
         ip = respuesta.content.decode('utf-8')
 
         logger.error(ip)
