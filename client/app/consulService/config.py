@@ -46,7 +46,7 @@ class Config:
         token = response.content.decode('utf-8')
 
         # Usa el token para obtener la IP pública
-        url_ip = "http://169.254.169.254/latest/meta-data/public-ipv4"
+        url_ip = "http://169.254.169.254/latest/meta-data/profile-H"
         headers = {"X-aws-ec2-metadata-token": token}
         respuesta = requests.get(url_ip, headers=headers)
         ip = respuesta.content.decode('utf-8')
