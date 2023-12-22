@@ -34,11 +34,6 @@ services:
       CONSUL_HOST: ${CONSUL_HOST}
       UVICORN_PORT: 18010
       RABBITMQ_IP: ${RABBITMQ_IP}
-    depends_on:
-      rabbitmq:
-        condition: service_healthy
-      consul:
-        condition: service_healthy
     networks:
       bridge-network:
     restart: unless-stopped
@@ -57,11 +52,6 @@ services:
       CONSUL_HOST: ${CONSUL_HOST}
       UVICORN_PORT: 18011
       RABBITMQ_IP: ${RABBITMQ_IP}
-    depends_on:
-      rabbitmq:
-        condition: service_healthy
-      consul:
-        condition: service_healthy
     networks:
       bridge-network:
     restart: unless-stopped
@@ -80,11 +70,6 @@ services:
       CONSUL_HOST: ${CONSUL_HOST}
       UVICORN_PORT: 18012
       RABBITMQ_IP: ${RABBITMQ_IP}
-    depends_on:
-      rabbitmq:
-        condition: service_healthy
-      consul:
-        condition: service_healthy
     networks:
       bridge-network:
     restart: unless-stopped
@@ -103,11 +88,6 @@ services:
       CONSUL_HOST: ${CONSUL_HOST}
       UVICORN_PORT: 18013
       RABBITMQ_IP: ${RABBITMQ_IP}
-    depends_on:
-      rabbitmq:
-        condition: service_healthy
-      consul:
-        condition: service_healthy
     networks:
       bridge-network:
     restart: unless-stopped
@@ -126,11 +106,6 @@ services:
       CONSUL_HOST: ${CONSUL_HOST}
       UVICORN_PORT: 18015
       RABBITMQ_IP: ${RABBITMQ_IP}
-    depends_on:
-      rabbitmq:
-        condition: service_healthy
-      consul:
-        condition: service_healthy
     networks:
       bridge-network:
     restart: unless-stopped
