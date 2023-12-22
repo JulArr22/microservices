@@ -2,23 +2,23 @@ version: '3'
 
 services:
   # Consul
-  consul:
-    build: ./consul
-    ports:
-      - '8300:8300'
-      - '8301:8301'
-      - '8301:8301/udp'
-      - '8500:8500'     # Port For Consul Web UI
-      - '8600:8600'
-      - '8600:8600/udp'
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8500/"]
-      interval: 2s
-      timeout: 2s
-      retries: 10
-    networks:
-      bridge-network:
-        ipv4_address: '${CONSUL_HOST}'
+  # consul:
+  #   build: ./consul
+  #   ports:
+  #     - '8300:8300'
+  #     - '8301:8301'
+  #     - '8301:8301/udp'
+  #     - '8500:8500'     # Port For Consul Web UI
+  #     - '8600:8600'
+  #     - '8600:8600/udp'
+  #   healthcheck:
+  #     test: ["CMD", "curl", "-f", "http://localhost:8500/"]
+  #     interval: 2s
+  #     timeout: 2s
+  #     retries: 10
+  #   networks:
+  #     bridge-network:
+  #       ipv4_address: '${CONSUL_HOST}'
 
   # Service Logs
   logs1:
@@ -32,7 +32,7 @@ services:
       SERVICE_NAME: logs
       SERVICE_ID: logs1
       CONSUL_HOST: ${CONSUL_HOST}
-      UVICORN_PORT: ${UVICORN_PORT}
+      UVICORN_PORT: 18010
       RABBITMQ_IP: ${RABBITMQ_IP}
     depends_on:
       rabbitmq:
@@ -55,7 +55,7 @@ services:
       SERVICE_NAME: client
       SERVICE_ID: client1
       CONSUL_HOST: ${CONSUL_HOST}
-      UVICORN_PORT: ${UVICORN_PORT}
+      UVICORN_PORT: 18011
       RABBITMQ_IP: ${RABBITMQ_IP}
     depends_on:
       rabbitmq:
@@ -78,7 +78,7 @@ services:
       SERVICE_NAME: delivery
       SERVICE_ID: delivery1
       CONSUL_HOST: ${CONSUL_HOST}
-      UVICORN_PORT: ${UVICORN_PORT}
+      UVICORN_PORT: 18012
       RABBITMQ_IP: ${RABBITMQ_IP}
     depends_on:
       rabbitmq:
@@ -101,7 +101,7 @@ services:
       SERVICE_NAME: machine
       SERVICE_ID: machine1
       CONSUL_HOST: ${CONSUL_HOST}
-      UVICORN_PORT: ${UVICORN_PORT}
+      UVICORN_PORT: 18013
       RABBITMQ_IP: ${RABBITMQ_IP}
     depends_on:
       rabbitmq:
@@ -124,7 +124,7 @@ services:
       SERVICE_NAME: payment
       SERVICE_ID: payment1
       CONSUL_HOST: ${CONSUL_HOST}
-      UVICORN_PORT: ${UVICORN_PORT}
+      UVICORN_PORT: 18015
       RABBITMQ_IP: ${RABBITMQ_IP}
     depends_on:
       rabbitmq:
@@ -135,22 +135,22 @@ services:
       bridge-network:
     restart: unless-stopped
 
-  rabbitmq:
-    build: ./rabbitmq
-    ports:
-      - "15672:15672"  # Port For RabbitMQ Web UI
-      - "5672:5672"    # Port For RabbitMQ Service
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:15672/"]
-      interval: 2s
-      timeout: 2s
-      retries: 10
-    environment:
-      RABBITMQ_DEFAULT_USER: user
-      RABBITMQ_DEFAULT_PASS: user
-    networks:
-      bridge-network:
-        ipv4_address: '${RABBITMQ_IP}'
+  # rabbitmq:
+  #   build: ./rabbitmq
+  #   ports:
+  #     - "15672:15672"  # Port For RabbitMQ Web UI
+  #     - "5672:5672"    # Port For RabbitMQ Service
+  #   healthcheck:
+  #     test: ["CMD", "curl", "-f", "http://localhost:15672/"]
+  #     interval: 2s
+  #     timeout: 2s
+  #     retries: 10
+  #   environment:
+  #     RABBITMQ_DEFAULT_USER: user
+  #     RABBITMQ_DEFAULT_PASS: user
+  #   networks:
+  #     bridge-network:
+  #       ipv4_address: '${RABBITMQ_IP}'
 
 networks:
   bridge-network:
