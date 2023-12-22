@@ -33,6 +33,7 @@ services:
       SERVICE_ID: logs1
       CONSUL_HOST: ${CONSUL_HOST}
       UVICORN_PORT: ${UVICORN_PORT}
+      RABBITMQ_IP: ${RABBITMQ_IP}
     depends_on:
       rabbitmq:
         condition: service_healthy
@@ -55,6 +56,7 @@ services:
       SERVICE_ID: client1
       CONSUL_HOST: ${CONSUL_HOST}
       UVICORN_PORT: ${UVICORN_PORT}
+      RABBITMQ_IP: ${RABBITMQ_IP}
     depends_on:
       rabbitmq:
         condition: service_healthy
@@ -77,6 +79,7 @@ services:
       SERVICE_ID: delivery1
       CONSUL_HOST: ${CONSUL_HOST}
       UVICORN_PORT: ${UVICORN_PORT}
+      RABBITMQ_IP: ${RABBITMQ_IP}
     depends_on:
       rabbitmq:
         condition: service_healthy
@@ -99,6 +102,7 @@ services:
       SERVICE_ID: machine1
       CONSUL_HOST: ${CONSUL_HOST}
       UVICORN_PORT: ${UVICORN_PORT}
+      RABBITMQ_IP: ${RABBITMQ_IP}
     depends_on:
       rabbitmq:
         condition: service_healthy
@@ -121,6 +125,7 @@ services:
       SERVICE_ID: payment1
       CONSUL_HOST: ${CONSUL_HOST}
       UVICORN_PORT: ${UVICORN_PORT}
+      RABBITMQ_IP: ${RABBITMQ_IP}
     depends_on:
       rabbitmq:
         condition: service_healthy
