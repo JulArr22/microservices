@@ -44,7 +44,7 @@ class Config:
         respuesta = requests.get(url)
         ip = respuesta.content.decode('utf-8')
 
-        logger.info(ip)
+        logger.error(ip)
 
         if ip is None:
             ip = "127.0.0.1"

@@ -32,7 +32,7 @@ services:
       SERVICE_NAME: logs
       SERVICE_ID: logs1
       CONSUL_HOST: ${CONSUL_HOST}
-      UVICORN_PORT: 18010
+      UVICORN_PORT: ${UVICORN_PORT}
       RABBITMQ_IP: ${RABBITMQ_IP}
     networks:
       bridge-network:
@@ -50,7 +50,7 @@ services:
       SERVICE_NAME: client
       SERVICE_ID: client1
       CONSUL_HOST: ${CONSUL_HOST}
-      UVICORN_PORT: 18011
+      UVICORN_PORT: ${UVICORN_PORT}
       RABBITMQ_IP: ${RABBITMQ_IP}
     networks:
       bridge-network:
@@ -68,7 +68,7 @@ services:
       SERVICE_NAME: delivery
       SERVICE_ID: delivery1
       CONSUL_HOST: ${CONSUL_HOST}
-      UVICORN_PORT: 18012
+      UVICORN_PORT: ${UVICORN_PORT}
       RABBITMQ_IP: ${RABBITMQ_IP}
     networks:
       bridge-network:
@@ -86,7 +86,7 @@ services:
       SERVICE_NAME: machine
       SERVICE_ID: machine1
       CONSUL_HOST: ${CONSUL_HOST}
-      UVICORN_PORT: 18013
+      UVICORN_PORT: ${UVICORN_PORT}
       RABBITMQ_IP: ${RABBITMQ_IP}
     networks:
       bridge-network:
@@ -104,7 +104,7 @@ services:
       SERVICE_NAME: payment
       SERVICE_ID: payment1
       CONSUL_HOST: ${CONSUL_HOST}
-      UVICORN_PORT: 18015
+      UVICORN_PORT: ${UVICORN_PORT}
       RABBITMQ_IP: ${RABBITMQ_IP}
     networks:
       bridge-network:
