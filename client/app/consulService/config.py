@@ -3,7 +3,6 @@ from dotenv import load_dotenv
 import ifaddr
 import requests
 import logging
-import boto3
 
 logger = logging.getLogger(__name__)
 
@@ -46,7 +45,7 @@ class Config:
         token = response.content.decode('utf-8')
 
         # Usa el token para obtener la IP pública
-        url_ip = "http://169.254.169.254/latest/meta-data/profile-H"
+        url_ip = "http://169.254.169.254/latest/meta-data/local-ipv4"
         headers = {"X-aws-ec2-metadata-token": token}
         respuesta = requests.get(url_ip, headers=headers)
         ip = respuesta.content.decode('utf-8')
