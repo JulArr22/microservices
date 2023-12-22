@@ -44,12 +44,35 @@ class Config:
         token_response = requests.put(token_url, headers=token_headers)
         token = token_response.text.strip()
 
-        ip_url = "http://169.254.169.254/latest/meta-data/public-ipv4"
+        ip_url = "http://169.254.169.254/latest/meta-data/profile-H"
         ip_headers = {"X-aws-ec2-metadata-token": token}
         ip_response = requests.get(ip_url, headers=ip_headers)
         ip = ip_response.text.strip()
 
-        logger.error(ip)
+        token_url = "http://169.254.169.254/latest/api/token"
+        token_headers = {"X-awsec2-metadata-token-ttl-seconds": "21600"}
+
+        try:
+            token_response = requests.put(token_url, headers=token_headers)
+            token_response.raise_for_status()
+            token = token_response.text.strip()
+
+            # Get the public IP address
+            ip_url = "http://169.254.169.254/latest/meta-data/public-ipv4"
+            ip_headers = {"X-aws-ec2-metadata-token": token}
+
+            try:
+                ip_response = requests.get(ip_url, headers=ip_headers)
+                ip_response.raise_for_status()
+                public_ip = ip_response.text.strip()
+
+                logger.info(f"The public IP address of the EC2 instance is: {public_ip}")
+
+            except requests.exceptions.RequestException as ip_error:
+                logger.error(f"Error getting public IP address: {ip_error}")
+
+        except requests.exceptions.RequestException as token_error:
+            logger.error(f"Error getting token: {token_error}")
 
         if ip is None:
             ip = "127.0.0.1"
