@@ -3,6 +3,7 @@ from dotenv import load_dotenv
 import ifaddr
 import requests
 import logging
+import boto3
 
 logger = logging.getLogger(__name__)
 
@@ -38,41 +39,12 @@ class Config:
 
     def get_ip(self):
         #ip = Config.get_adapter_ip("eth0")  # this is the default interface in docker
-
-        token_url = "http://169.254.169.254/latest/api/token"
-        token_headers = {"X-awsec2-metadata-token-ttl-seconds": "21600"}
-        token_response = requests.put(token_url, headers=token_headers)
-        token = token_response.text.strip()
-
-        ip_url = "http://169.254.169.254/latest/meta-data/profile-H"
-        ip_headers = {"X-aws-ec2-metadata-token": token}
-        ip_response = requests.get(ip_url, headers=ip_headers)
-        ip = ip_response.text.strip()
-
-        token_url = "http://169.254.169.254/latest/api/token"
-        token_headers = {"X-awsec2-metadata-token-ttl-seconds": "21600"}
-
-        try:
-            token_response = requests.put(token_url, headers=token_headers)
-            token_response.raise_for_status()
-            token = token_response.text.strip()
-
-            # Get the public IP address
-            ip_url = "http://169.254.169.254/latest/meta-data/public-ipv4"
-            ip_headers = {"X-aws-ec2-metadata-token": token}
-
-            try:
-                ip_response = requests.get(ip_url, headers=ip_headers)
-                ip_response.raise_for_status()
-                public_ip = ip_response.text.strip()
-
-                logger.info(f"The public IP address of the EC2 instance is: {public_ip}")
-
-            except requests.exceptions.RequestException as ip_error:
-                logger.error(f"Error getting public IP address: {ip_error}")
-
-        except requests.exceptions.RequestException as token_error:
-            logger.error(f"Error getting token: {token_error}")
+        
+        ec2_client = boto3.client('ec2', region_name="us-east-1")
+        metadata = boto3.resource('ec2', region_name="us-east-1")
+        instance_id = metadata.InstanceMetadata.instance_id
+        response = ec2_client.describe_instances(InstanceIds=[instance_id])
+        ip = response['Reservations'][0]['Instances'][0]['PublicIpAddress']
 
         if ip is None:
             ip = "127.0.0.1"
