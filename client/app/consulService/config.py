@@ -38,8 +38,17 @@ class Config:
 
     def get_ip(self):
         #ip = Config.get_adapter_ip("eth0")  # this is the default interface in docker
-        resp = requests.get("http://169.254.169.254/latest/meta-data/local-ipv4")
-        ip = resp.content.decode('utf-8')
+
+        token_url = "http://169.254.169.254/latest/api/token"
+        token_headers = {"X-awsec2-metadata-token-ttl-seconds": "21600"}
+        token_response = requests.put(token_url, headers=token_headers)
+        token = token_response.text.strip()
+
+        ip_url = "http://169.254.169.254/latest/meta-data/public-ipv4"
+        ip_headers = {"X-aws-ec2-metadata-token": token}
+        ip_response = requests.get(ip_url, headers=ip_headers)
+        ip = ip_response.text.strip()
+
         logger.error(ip)
 
         if ip is None:
