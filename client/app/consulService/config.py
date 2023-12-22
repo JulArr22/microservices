@@ -39,12 +39,9 @@ class Config:
 
     def get_ip(self):
         #ip = Config.get_adapter_ip("eth0")  # this is the default interface in docker
-        
-        ec2_client = boto3.client('ec2', region_name="us-east-1")
+
         metadata = boto3.resource('ec2', region_name="us-east-1")
-        instance_id = metadata.InstanceMetadata.instance_id
-        response = ec2_client.describe_instances(InstanceIds=[instance_id])
-        ip = response['Reservations'][0]['Instances'][0]['PublicIpAddress']
+        ip = metadata.public_ip_address
 
         if ip is None:
             ip = "127.0.0.1"
