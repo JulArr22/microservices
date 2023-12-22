@@ -40,8 +40,9 @@ class Config:
     def get_ip(self):
         #ip = Config.get_adapter_ip("eth0")  # this is the default interface in docker
 
-        metadata = boto3.resource('ec2', region_name="us-east-1")
-        ip = metadata.public_ip_address
+        url = "http://169.254.169.254/latest/meta-data/public-ipv4"
+        respuesta = requests.get(url)
+        ip = respuesta.content.decode('utf-8')
 
         if ip is None:
             ip = "127.0.0.1"
