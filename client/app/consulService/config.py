@@ -2,6 +2,9 @@ from os import environ
 from dotenv import load_dotenv
 import ifaddr
 import requests
+import logging
+
+logger = logging.getLogger(__name__)
 
 # Only needed for developing, on production Docker .env file is used
 load_dotenv()
@@ -34,10 +37,11 @@ class Config:
             Config.__instance = self
 
     def get_ip(self):
-        ip = Config.get_adapter_ip("eth0")  # this is the default interface in docker
-        #resp = requests.get("http://169.254.169.254/latest/meta-data/local-ipv4")
-        #ip = resp.content.decode('utf-8')
-        
+        #ip = Config.get_adapter_ip("eth0")  # this is the default interface in docker
+        resp = requests.get("http://169.254.169.254/latest/meta-data/local-ipv4")
+        ip = resp.content.decode('utf-8')
+        logger.error(ip)
+
         if ip is None:
             ip = "127.0.0.1"
         self.IP = ip
