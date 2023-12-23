@@ -15,7 +15,7 @@ class Config:
     CONSUL_HOST = environ.get("CONSUL_HOST", "192.168.18.201")
     CONSUL_PORT = environ.get("CONSUL_PORT", 8500)
     CONSUL_DNS_PORT = environ.get("CONSUL_DNS_PORT", 8600)
-    PORT = int(environ.get("UVICORN_PORT", '8001'))
+    PORT = int(environ.get("CLIENT_PORT", '18011'))
     SERVICE_NAME = environ.get("SERVICE_NAME", "client")
     SERVICE_ID = environ.get("SERVICE_ID", "client1")
     IP = None
@@ -49,8 +49,6 @@ class Config:
         headers = {"X-aws-ec2-metadata-token": token}
         respuesta = requests.get(url_ip, headers=headers)
         ip = respuesta.content.decode('utf-8')
-
-        logger.error(ip)
 
         if ip is None:
             ip = "127.0.0.1"

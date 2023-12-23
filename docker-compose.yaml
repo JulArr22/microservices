@@ -52,6 +52,7 @@ services:
       CONSUL_HOST: ${CONSUL_HOST}
       UVICORN_PORT: ${UVICORN_PORT}
       RABBITMQ_IP: ${RABBITMQ_IP}
+      CLIENT_PORT: ${CLIENT_PORT}
     networks:
       bridge-network:
     restart: unless-stopped
